@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>click it</title>
+<style>
+  :root {
+    --bg: #1a0f14;
+    --pink: #ff5d8f;
+    --pink-bright: #ff8fb3;
+    --cream: #fff3f6;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+
+  /* ---------- Landing screen ---------- */
+  #landing {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  #heart-btn {
+    width: 180px;
+    height: 180px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s ease;
+  }
+
+  #heart-btn:hover {
+    transform: scale(1.08);
+  }
+
+  #heart-btn:active {
+    transform: scale(0.92);
+  }
+
+  #heart-btn svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 24px rgba(255, 93, 143, 0.55));
+  }
+
+  #hint {
+    position: absolute;
+    bottom: 12%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: var(--pink-bright);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.85; }
+  }
+
+  /* ---------- Flood screen ---------- */
+  #flood {
+    display: none;
+    height: 100%;
+    width: 100%;
+    background: var(--cream);
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  #flood.show {
+    display: block;
+  }
+
+  #flood-inner {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.9;
+    color: var(--pink);
+    text-align: center;
+    word-spacing: 8px;
+  }
+
+  #flood-inner span {
+    display: inline-block;
+    margin: 0 6px;
+  }
+
+  @media (max-width: 600px) {
+    #flood-inner { font-size: 16px; line-height: 1.7; }
+    #heart-btn { width: 130px; height: 130px; }
+  }
+</style>
+</head>
+<body>
+
+  <div id="landing">
+    <button id="heart-btn" aria-label="Click the heart">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 21s-7.5-4.6-10.2-9.3C0.1 8.8 1.4 5 5 4.1c2.3-.6 4.3.5 5.5 2.2 1.2-1.7 3.2-2.8 5.5-2.2 3.6.9 4.9 4.7 3.2 7.6C19.5 16.4 12 21 12 21z"
+          fill="var(--pink)" stroke="var(--pink-bright)" stroke-width="0.5"/>
+      </svg>
+    </button>
+    <div id="hint">click the heart</div>
+  </div>
+
+  <div id="flood">
+    <div id="flood-inner"></div>
+  </div>
+
+  <script>
+    const heartBtn = document.getElementById('heart-btn');
+    const landing = document.getElementById('landing');
+    const flood = document.getElementById('flood');
+    const floodInner = document.getElementById('flood-inner');
+
+    heartBtn.addEventListener('click', () => {
+      landing.style.display = 'none';
+      flood.classList.add('show');
+
+      // Build the 100,000 repetitions efficiently
+      const count = 100000;
+      const chunkSize = 2000;
+      let written = 0;
+      const frag = document.createDocumentFragment();
+
+      function appendChunk() {
+        const end = Math.min(written + chunkSize, count);
+        let html = '';
+        for (let i = written; i < end; i++) {
+          html += '<span>I love you</span>';
+        }
+        floodInner.insertAdjacentHTML('beforeend', html);
+        written = end;
+        if (written < count) {
+          requestAnimationFrame(appendChunk);
+        }
+      }
+      appendChunk();
+    });
+  </script>
+
+</body>
+</html>
